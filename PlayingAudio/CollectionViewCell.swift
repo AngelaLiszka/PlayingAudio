@@ -184,11 +184,6 @@ class CollectionViewCell: UICollectionViewCell {
         let strDuration = String(format:"%02d:%02d", minutes, seconds)
         return strDuration
     }
-    ///add Obsever in NotificationCenter for AVPlayerItemDidPlayToEndTime
-    func addObserverForPlayerEnd(){
-        NotificationCenter.default.addObserver(self,selector: #selector(playerItemDidReachEnd(_:)),name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
-                                               object: player.currentItem)
-    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -283,24 +278,16 @@ class CollectionViewCell: UICollectionViewCell {
     }
     
     
-    func playerItemDidReachEnd(_ notification: Notification) {
-        if let _: AVPlayerItem = notification.object as? AVPlayerItem {
-            print("AUDIO FINISHED")
-            player.replaceCurrentItem(with: nil)
-            if let delegate = self.delegate {
-                delegate.closeView(self)
-            }
-            player.pause()
-            player.seek(to: kCMTimeZero)
-            playImage.setImage(#imageLiteral(resourceName: "play"), for: UIControlState.normal)
+    func playerItemDidReachEnd() {
+        print("AUDIO FINISHED")
+        player.replaceCurrentItem(with: nil)
+        player.pause()
+        player.seek(to: kCMTimeZero)
+        playImage.setImage(#imageLiteral(resourceName: "play"), for: UIControlState.normal)
             
-            if (_timeObserver != nil) {
-                player.removeTimeObserver(_timeObserver!)
-                _timeObserver = nil
-            }
-            
-            
-            
+        if (_timeObserver != nil) {
+            player.removeTimeObserver(_timeObserver!)
+            _timeObserver = nil
         }
     }
     

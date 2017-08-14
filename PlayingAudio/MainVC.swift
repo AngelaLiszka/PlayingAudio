@@ -27,6 +27,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     var filterClassName: [String] = []
     var activityIndicator: UIActivityIndicatorView!
     var viewActivityIndicator: UIView!
+    var currentItem: IndexPath = []
     
     typealias CompletionHandler = (_ success:Bool) -> Void
     
@@ -41,6 +42,8 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         super.viewDidLoad()
         
         NotificationCenter.default.addObserver(self, selector: #selector(reloadList), name: NSNotification.Name(rawValue: "reload"), object: nil)
+        
+        NotificationCenter.default.addObserver(self,selector: #selector(playDidEnd),name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,object: nil)
     }
     
     func reloadList(){
@@ -209,11 +212,6 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             cell.playImagePreDisplay.isHidden = false
             cell.closeBtnHeight.constant = 20.0
             cell.nextLbl.isHidden = true
-            
-            if indexPath.row ==  0{
-                cell.addObserverForPlayerEnd()
-            }
-
             return cell
         }else {
             
@@ -239,7 +237,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath){
         
-        
+        currentItem = indexPath;
         if autoPlayAllSourcesSwitch != true {
             
             if indexPath == findCenterIndex(){
@@ -402,6 +400,11 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         return 0
     }
     
+    func playDidEnd(){
+        let cell = cv.cellForItem(at: currentItem) as! CollectionViewCell
+        cell.playerItemDidReachEnd()
+        closeView(cell)
+    }
     
     func backBtnAction(){
         let indexPath = cv.indexPathsForSelectedItems! as [NSIndexPath]
@@ -458,9 +461,9 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                     
                     
                     let visibleItems: NSArray = self.cv.indexPathsForVisibleItems as NSArray
-                    let currentItem: IndexPath = visibleItems.object(at: 0) as! IndexPath
-                    let nextItem: IndexPath = IndexPath(item: currentItem.item, section: 0)
-                    print(currentItem)
+                    self.currentItem = visibleItems.object(at: 0) as! IndexPath
+                    let nextItem: IndexPath = IndexPath(item: self.currentItem.item, section: 0)
+                    print(self.currentItem)
                     print(nextItem)
                     if nextItem.row == self.streams.count{
                         self.cv?.scrollToItem(at: IndexPath(row: 0, section: 0),
