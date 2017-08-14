@@ -8,20 +8,30 @@
 
 /* Begin PBXBuildFile section */
 		02BC2B4F1F3E2DF2005A6A6D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BC2B4E1F3E2DF2005A6A6D /* AppDelegate.swift */; };
-		02BC2B511F3E2DF2005A6A6D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BC2B501F3E2DF2005A6A6D /* ViewController.swift */; };
+		02BC2B511F3E2DF2005A6A6D /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BC2B501F3E2DF2005A6A6D /* MainVC.swift */; };
 		02BC2B541F3E2DF2005A6A6D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 02BC2B521F3E2DF2005A6A6D /* Main.storyboard */; };
 		02BC2B561F3E2DF2005A6A6D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 02BC2B551F3E2DF2005A6A6D /* Assets.xcassets */; };
 		02BC2B591F3E2DF2005A6A6D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 02BC2B571F3E2DF2005A6A6D /* LaunchScreen.storyboard */; };
+		02BC2B611F3E2EAD005A6A6D /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BC2B601F3E2EAD005A6A6D /* CollectionViewCell.swift */; };
+		02BC2B631F3E2F19005A6A6D /* stations.json in Resources */ = {isa = PBXBuildFile; fileRef = 02BC2B621F3E2F19005A6A6D /* stations.json */; };
+		02BC2B651F3E3A98005A6A6D /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BC2B641F3E3A98005A6A6D /* SettingsVC.swift */; };
+		6D6BE875825DDBD30B52E1E5 /* Pods_PlayingAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13FDD08618A8D35AD2427D63 /* Pods_PlayingAudio.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		02BC2B4B1F3E2DF2005A6A6D /* PlayingAudio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlayingAudio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		02BC2B4E1F3E2DF2005A6A6D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		02BC2B501F3E2DF2005A6A6D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		02BC2B501F3E2DF2005A6A6D /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
 		02BC2B531F3E2DF2005A6A6D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		02BC2B551F3E2DF2005A6A6D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		02BC2B581F3E2DF2005A6A6D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		02BC2B5A1F3E2DF2005A6A6D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		02BC2B601F3E2EAD005A6A6D /* CollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
+		02BC2B621F3E2F19005A6A6D /* stations.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = stations.json; sourceTree = "<group>"; };
+		02BC2B641F3E3A98005A6A6D /* SettingsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
+		13FDD08618A8D35AD2427D63 /* Pods_PlayingAudio.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PlayingAudio.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B11B0019849ADBAD5E55927A /* Pods-PlayingAudio.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlayingAudio.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PlayingAudio/Pods-PlayingAudio.debug.xcconfig"; sourceTree = "<group>"; };
+		D9566EE38D22176CF295FB60 /* Pods-PlayingAudio.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlayingAudio.release.xcconfig"; path = "Pods/Target Support Files/Pods-PlayingAudio/Pods-PlayingAudio.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,6 +39,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D6BE875825DDBD30B52E1E5 /* Pods_PlayingAudio.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,6 +51,8 @@
 			children = (
 				02BC2B4D1F3E2DF2005A6A6D /* PlayingAudio */,
 				02BC2B4C1F3E2DF2005A6A6D /* Products */,
+				8522CF4DE8810427EDDBEB59 /* Pods */,
+				1DEC47952F4EA0F893F608A2 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -55,13 +68,33 @@
 			isa = PBXGroup;
 			children = (
 				02BC2B4E1F3E2DF2005A6A6D /* AppDelegate.swift */,
-				02BC2B501F3E2DF2005A6A6D /* ViewController.swift */,
+				02BC2B501F3E2DF2005A6A6D /* MainVC.swift */,
+				02BC2B621F3E2F19005A6A6D /* stations.json */,
 				02BC2B521F3E2DF2005A6A6D /* Main.storyboard */,
 				02BC2B551F3E2DF2005A6A6D /* Assets.xcassets */,
 				02BC2B571F3E2DF2005A6A6D /* LaunchScreen.storyboard */,
 				02BC2B5A1F3E2DF2005A6A6D /* Info.plist */,
+				02BC2B601F3E2EAD005A6A6D /* CollectionViewCell.swift */,
+				02BC2B641F3E3A98005A6A6D /* SettingsVC.swift */,
 			);
 			path = PlayingAudio;
+			sourceTree = "<group>";
+		};
+		1DEC47952F4EA0F893F608A2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				13FDD08618A8D35AD2427D63 /* Pods_PlayingAudio.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8522CF4DE8810427EDDBEB59 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				B11B0019849ADBAD5E55927A /* Pods-PlayingAudio.debug.xcconfig */,
+				D9566EE38D22176CF295FB60 /* Pods-PlayingAudio.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,9 +104,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 02BC2B5D1F3E2DF2005A6A6D /* Build configuration list for PBXNativeTarget "PlayingAudio" */;
 			buildPhases = (
+				773FC1C60DEC2F3C008C5ADD /* [CP] Check Pods Manifest.lock */,
 				02BC2B471F3E2DF2005A6A6D /* Sources */,
 				02BC2B481F3E2DF2005A6A6D /* Frameworks */,
 				02BC2B491F3E2DF2005A6A6D /* Resources */,
+				7CC18D64D033288609291C25 /* [CP] Embed Pods Frameworks */,
+				3D318ACAAC51490DDBB334D2 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -97,6 +133,11 @@
 					02BC2B4A1F3E2DF2005A6A6D = {
 						CreatedOnToolsVersion = 8.3.3;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -125,19 +166,70 @@
 			files = (
 				02BC2B591F3E2DF2005A6A6D /* LaunchScreen.storyboard in Resources */,
 				02BC2B561F3E2DF2005A6A6D /* Assets.xcassets in Resources */,
+				02BC2B631F3E2F19005A6A6D /* stations.json in Resources */,
 				02BC2B541F3E2DF2005A6A6D /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		3D318ACAAC51490DDBB334D2 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PlayingAudio/Pods-PlayingAudio-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		773FC1C60DEC2F3C008C5ADD /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		7CC18D64D033288609291C25 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PlayingAudio/Pods-PlayingAudio-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		02BC2B471F3E2DF2005A6A6D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				02BC2B511F3E2DF2005A6A6D /* ViewController.swift in Sources */,
+				02BC2B511F3E2DF2005A6A6D /* MainVC.swift in Sources */,
+				02BC2B651F3E3A98005A6A6D /* SettingsVC.swift in Sources */,
 				02BC2B4F1F3E2DF2005A6A6D /* AppDelegate.swift in Sources */,
+				02BC2B611F3E2EAD005A6A6D /* CollectionViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,6 +352,7 @@
 		};
 		02BC2B5E1F3E2DF2005A6A6D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B11B0019849ADBAD5E55927A /* Pods-PlayingAudio.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = PlayingAudio/Info.plist;
@@ -272,6 +365,7 @@
 		};
 		02BC2B5F1F3E2DF2005A6A6D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D9566EE38D22176CF295FB60 /* Pods-PlayingAudio.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = PlayingAudio/Info.plist;
@@ -301,6 +395,7 @@
 				02BC2B5F1F3E2DF2005A6A6D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
