@@ -210,8 +210,13 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             cell.closeBtnHeight.constant = 20.0
             cell.nextLbl.isHidden = true
             
+            if indexPath.row ==  0{
+                cell.addObserverForPlayerEnd()
+            }
+
             return cell
         }else {
+            
             return CollectionViewCell()
         }
         
@@ -507,9 +512,9 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         let indexPath = cv.indexPathsForSelectedItems!
         print(findCenterIndex())
         print("INDEX: \(indexPath)")
-        let centerIndex = findCenterIndex()
-        cv.isScrollEnabled = true
-        cv.reloadItems(at: [centerIndex] as [IndexPath])
+//        let centerIndex = findCenterIndex()
+//        cv.isScrollEnabled = true
+//        cv.reloadItems(at: [centerIndex] as [IndexPath])
         self.thereIsCellTapped = false
         
         

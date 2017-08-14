@@ -24,6 +24,7 @@ class CollectionViewCell: UICollectionViewCell {
     var delegate: CustomCellDelegate?
     var timer = Timer()
     var playtouch: Bool = false
+    
     let SHADOW_GRAY: CGFloat = 120.0 / 255.0
     let WHITE: CGFloat = 255.0 / 255.0
     
@@ -183,15 +184,15 @@ class CollectionViewCell: UICollectionViewCell {
         let strDuration = String(format:"%02d:%02d", minutes, seconds)
         return strDuration
     }
-    
-    
+    ///add Obsever in NotificationCenter for AVPlayerItemDidPlayToEndTime
+    func addObserverForPlayerEnd(){
+        NotificationCenter.default.addObserver(self,selector: #selector(playerItemDidReachEnd(_:)),name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
+                                               object: player.currentItem)
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
-        NotificationCenter.default.addObserver(self,selector: #selector(playerItemDidReachEnd(_:)),name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
-                                               object: player.currentItem)
-        
+
         nextUpdate()
         cellMainViewBg.layer.cornerRadius = 20.0
         UIApplication.shared.beginReceivingRemoteControlEvents()
@@ -210,10 +211,6 @@ class CollectionViewCell: UICollectionViewCell {
             print("dfdfdfdfdfdfd44444444fdffdfffff")
             print(error.localizedDescription)
         }
-        
-        
-        
-        
     }
     
     
