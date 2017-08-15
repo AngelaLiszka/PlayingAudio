@@ -132,6 +132,7 @@
 				TargetAttributes = {
 					02BC2B4A1F3E2DF2005A6A6D = {
 						CreatedOnToolsVersion = 8.3.3;
+						DevelopmentTeam = 759G8E96X9;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
@@ -355,6 +356,7 @@
 			baseConfigurationReference = B11B0019849ADBAD5E55927A /* Pods-PlayingAudio.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 759G8E96X9;
 				INFOPLIST_FILE = PlayingAudio/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.playing.PlayingAudio;
@@ -368,6 +370,7 @@
 			baseConfigurationReference = D9566EE38D22176CF295FB60 /* Pods-PlayingAudio.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 759G8E96X9;
 				INFOPLIST_FILE = PlayingAudio/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.playing.PlayingAudio;

@@ -214,172 +214,101 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             cell.nextLbl.isHidden = true
             return cell
         }else {
-            
             return CollectionViewCell()
         }
-        
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         cell.layer.cornerRadius = 10
-        
-        
-        
     }
     
-    
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        
         
     }
     
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath){
-        
         currentItem = indexPath;
         if autoPlayAllSourcesSwitch != true {
-            
             if indexPath == findCenterIndex(){
                 if thereIsCellTapped != true {
-                    let item = cv.cellForItem(at: indexPath) as! CollectionViewCell
-                    self.loadingCell()
-                    self.view.isUserInteractionEnabled = true
-                    
-                    
-                    DispatchQueue.main.async(execute: { () -> Void in
-                        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: [], animations: ({
-                            let i = indexPath.row % self.streams.count
-                            item.bind(color: self.streams[i]["hex"] as! String)
-                            item.layer.cornerRadius = 1.0
-                            item.layer.borderWidth = 0.0
-                            item.frame = self.cv.bounds
-//                            item.cellMainViewBg.backgroundColor = UIColor.clear
-                            item.playImagePreDisplay.isHidden = true
-                            item.closeBtnHeight.constant = 40.0
-                            item.scrubber.isHidden = false
-                            item.closeBtnView.isHidden = false
-                            item.superview?.bringSubview(toFront: item)
-                            self.view.setNeedsLayout()
-                            self.view.layoutIfNeeded()
-                            item.setupNowPlayingInfoCenter()
-                            item.updateNowPlayingInfoCenter(name: (self.streams[indexPath.item]["name"] as? String)!)
-                        }), completion: { (finished: Bool) in
-                            let theStream = self.streams[indexPath.item]["streamURL"] as? String
-                            let isLive = self.streams[indexPath.item]["isLive"] as? Bool
-                            if isLive! {
-                                item.liveAudioStreamSelected(audioUrl: theStream!, live:isLive!)
-                            } else {
-                                item.audioStreamSelected(audioUrl: theStream!, live:isLive!) { (success) -> Void in
-                                    item.nextLbl.isHidden = false
-                                    item.countdownLbl.isHidden = false
-                                    item.playImage.isEnabled = true
-                                    self.cv.isScrollEnabled = false
-                                    item.playImage.isHidden = false
-                                    
-                                    if self.autoPlaySwitch {
-                                        DispatchQueue.main.async {
-                                            item.audioPlay()
-                                        }
-                                    } else {
-                                        DispatchQueue.main.async {
-                                            self.activityIndicator.stopAnimating()
-                                            self.viewActivityIndicator.removeFromSuperview()
-                                            self.view.isUserInteractionEnabled = true
-                                        }
-                                    }
-                                    
-                                }
-                            }
-                            
-                        })
-                    })
+                    self.playCellItem(indexPath: indexPath)
                     self.thereIsCellTapped = true
                 }
             }
-            
-            
         } else {
-            
-            
             if thereIsCellTapped != true {
-                let item = cv.cellForItem(at: indexPath) as! CollectionViewCell
-                self.loadingCell()
-                self.view.isUserInteractionEnabled = true
-                
-                
-                let when = DispatchTime.now() + 3 // change 2 to desired number of seconds
-                DispatchQueue.main.asyncAfter(deadline: when) {
-                    
-                    UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: [], animations: ({
-                        let i = indexPath.row % self.streams.count
-                        item.bind(color: self.streams[i]["hex"] as! String)
-                        item.layer.cornerRadius = 1.0
-                        item.layer.borderWidth = 0.0
-                        item.frame = self.cv.bounds
-//                        item.cellMainViewBg.backgroundColor = UIColor.clear
-                        item.playImagePreDisplay.isHidden = true
-                        item.closeBtnHeight.constant = 40.0
-                        item.scrubber.isHidden = false
-                        item.closeBtnView.isHidden = false
-                        item.superview?.bringSubview(toFront: item)
-                        self.view.setNeedsLayout()
-                        self.view.layoutIfNeeded()
-                        item.setupNowPlayingInfoCenter()
-                        item.updateNowPlayingInfoCenter(name: (self.streams[indexPath.item]["name"] as? String)!)
-                    }), completion: { (finished: Bool) in
-                        let theStream = self.streams[indexPath.item]["streamURL"] as? String
-                        let isLive = self.streams[indexPath.item]["isLive"] as? Bool
-                        if isLive! {
-                            item.liveAudioStreamSelected(audioUrl: theStream!, live:isLive!)
-                        } else {
-                            item.audioStreamSelected(audioUrl: theStream!, live:isLive!) { (success) -> Void in
-                                item.nextLbl.isHidden = false
-                                item.countdownLbl.isHidden = false
-                                item.playImage.isEnabled = true
-                                self.cv.isScrollEnabled = false
-                                item.playImage.isHidden = false
-                                
-                                if self.autoPlaySwitch {
-                                    DispatchQueue.main.async {
-                                        item.audioPlay()
-                                    }
-                                } else {
-                                    DispatchQueue.main.async {
-                                        self.activityIndicator.stopAnimating()
-                                        self.viewActivityIndicator.removeFromSuperview()
-                                        self.view.isUserInteractionEnabled = true
-                                    }
-                                }
-                                
-                            }
-                        }
-                        
-                    })
-                }
+                self.playCellItem(indexPath: indexPath)
                 self.thereIsCellTapped = true
             }
-            
-            
-            
-            
         }
-        
-        
-        
     }
     
+    private func playCellItem(indexPath: IndexPath){
+        
+        self.loadingCell()
+
+        let item = cv.cellForItem(at: indexPath) as! CollectionViewCell
+        let i = indexPath.row % self.streams.count
+        self.view.isUserInteractionEnabled = true
+        
+        let when = DispatchTime.now() + 3 // change 2 to desired number of seconds
+        DispatchQueue.main.asyncAfter(deadline: when) {
+            
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: [], animations: ({
+                item.bind(color: self.streams[i]["hex"] as! String)
+                item.layer.cornerRadius = 1.0
+                item.layer.borderWidth = 0.0
+                item.frame = self.cv.bounds
+                //                        item.cellMainViewBg.backgroundColor = UIColor.clear
+                item.playImagePreDisplay.isHidden = true
+                item.closeBtnHeight.constant = 40.0
+                item.scrubber.isHidden = false
+                item.closeBtnView.isHidden = false
+                item.superview?.bringSubview(toFront: item)
+                self.view.setNeedsLayout()
+                self.view.layoutIfNeeded()
+                item.setupNowPlayingInfoCenter()
+                item.updateNowPlayingInfoCenter(name: (self.streams[indexPath.item]["name"] as? String)!)
+                
+            }), completion: { (finished: Bool) in
+                let theStream = self.streams[indexPath.item]["streamURL"] as? String
+                let isLive = self.streams[indexPath.item]["isLive"] as? Bool
+                if isLive! {
+                    item.liveAudioStreamSelected(audioUrl: theStream!, live:isLive!)
+                } else {
+                    item.audioStreamSelected(audioUrl: theStream!, live:isLive!) { (success) -> Void in
+                    item.nextLbl.isHidden = false
+                    item.countdownLbl.isHidden = false
+                    item.playImage.isEnabled = true
+                    self.cv.isScrollEnabled = false
+                    item.playImage.isHidden = false
+                        
+                    if self.autoPlaySwitch {
+                        DispatchQueue.main.async {
+                            item.audioPlay()
+                        }
+                    } else {
+                        self.removeLoading(item)
+                    }
+                }
+            }
+                
+            })
+        }
+    }
     
+    func playDidEnd(){
+        let cell = cv.cellForItem(at: currentItem) as! CollectionViewCell
+        cell.playerItemDidReachEnd()
+        closeView(cell)
+    }
     
     private func findCenterIndex() -> IndexPath {
         let center = self.view.convert(self.cv.center, to: self.cv)
         let index = cv!.indexPathForItem(at: center)
         return index!
-        
     }
-    
-    
-    
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
@@ -400,19 +329,18 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         return 0
     }
     
-    func playDidEnd(){
-        let cell = cv.cellForItem(at: currentItem) as! CollectionViewCell
-        cell.playerItemDidReachEnd()
-        closeView(cell)
-    }
-    
     func backBtnAction(){
         let indexPath = cv.indexPathsForSelectedItems! as [NSIndexPath]
         cv.isScrollEnabled = true
         cv.reloadItems(at: indexPath as [IndexPath])
-        
     }
     
+    func removeLoading() {
+        self.activityIndicator.stopAnimating()
+        self.viewActivityIndicator.removeFromSuperview()
+        self.view.isUserInteractionEnabled = true
+    }
+
     
     func removeLoading(_ cell: CollectionViewCell) {
         self.activityIndicator.stopAnimating()
@@ -426,9 +354,6 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         self.view.isUserInteractionEnabled = true
     }
     
-    
-    
-    
     func closeViewAutoPlay(_ cell: CollectionViewCell) {
         self.activityIndicator.stopAnimating()
         self.viewActivityIndicator.removeFromSuperview()
@@ -438,96 +363,67 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         self.cv.isScrollEnabled = true
         self.cv.reloadItems(at: indexPath as [IndexPath])
         self.thereIsCellTapped = false
-        
-        
-        
     }
     
     
     func closeView(_ cell: CollectionViewCell) {
-        self.activityIndicator.stopAnimating()
-        self.viewActivityIndicator.removeFromSuperview()
-        self.view.isUserInteractionEnabled = true
-        
-        
         
         if self.autoPlayAllSourcesSwitch {
-            self.loadingCell()
             self.view.isUserInteractionEnabled = true
-            self.yourFunctionName() {
-                let when = DispatchTime.now() + 2 // change 2 to desired number of seconds
-                DispatchQueue.main.asyncAfter(deadline: when) {
-                    // Your code with delay
-                    
-                    
-                    let visibleItems: NSArray = self.cv.indexPathsForVisibleItems as NSArray
-                    self.currentItem = visibleItems.object(at: 0) as! IndexPath
-                    let nextItem: IndexPath = IndexPath(item: self.currentItem.item, section: 0)
-                    print(self.currentItem)
-                    print(nextItem)
-                    if nextItem.row == self.streams.count{
-                        self.cv?.scrollToItem(at: IndexPath(row: 0, section: 0),
-                                              at: .right,
-                                              animated: true)
-                        self.activityIndicator.stopAnimating()
-                        self.viewActivityIndicator.removeFromSuperview()
-                        self.view.isUserInteractionEnabled = true
-                    }else {
-                        
-                        self.scrollToNextCell() { (success) -> Void in
-                            if success {
-                                let when = DispatchTime.now() + 3 // change 2 to desired number of seconds
-                                DispatchQueue.main.asyncAfter(deadline: when) {
-                                    self.activityIndicator.stopAnimating()
-                                    self.viewActivityIndicator.removeFromSuperview()
-                                    self.view.isUserInteractionEnabled = true
-                                    if let centerCellIndexPath: NSIndexPath  = self.cv.centerCellIndexPath as NSIndexPath? {
-                                        print(centerCellIndexPath)
-                                        self.collectionView(self.cv, didSelectItemAt: centerCellIndexPath as IndexPath)
-                                    }
-                                }
-                            }
-                        }
-                        
-                    }
-                }
-            }
+            updateCurrentPlayItemCell()
+            updateScrollState();
+            self.playCellItem(indexPath: self.currentItem)
+            
+//                let when = DispatchTime.now() + 2 // change 2 to desired number of seconds
+//                DispatchQueue.global().asyncAfter(deadline: when) {
+//            }
         } else {
             let indexPath = self.cv.indexPathsForSelectedItems! as [NSIndexPath]
             self.cv.isScrollEnabled = true
             self.cv.reloadItems(at: indexPath as [IndexPath])
             self.thereIsCellTapped = false
-            
         }
-        
-        
-        
-        
     }
     
+    func updateCurrentPlayItemCell(){
+        if self.currentItem.row+1 == self.streams.count{
+            self.currentItem = IndexPath(item: 0, section: 0)
+        }else {
+            self.currentItem = IndexPath(item: self.currentItem.row+1, section: 0)
+        }
+    }
+    
+    func updateScrollState(){
+        if self.currentItem.row == self.streams.count{
+            self.cv?.scrollToItem(at: IndexPath(row: 0, section: 0),
+                                  at: .right,
+                                  animated: true)
+            
+        }else {
+            self.scrollToNextCell() { (success) -> Void in
+                if success {
+                }
+            }
+        }
+    }
     
     func yourFunctionName(finished: @escaping () -> Void) {
         
         print("Doing something!")
-        self.activityIndicator.stopAnimating()
-        self.viewActivityIndicator.removeFromSuperview()
-        self.view.isUserInteractionEnabled = true
+        
+        removeLoading()
+        
         let indexPath = cv.indexPathsForSelectedItems!
         print(findCenterIndex())
         print("INDEX: \(indexPath)")
-//        let centerIndex = findCenterIndex()
-//        cv.isScrollEnabled = true
-//        cv.reloadItems(at: [centerIndex] as [IndexPath])
+        
         self.thereIsCellTapped = false
         
-        
         let del = DispatchTime.now() + 3 // change 2 to desired number of seconds
-        DispatchQueue.main.asyncAfter(deadline: del) {
+        DispatchQueue.global().asyncAfter(deadline: del) {
             finished()
         }
-        
     }
-    
     
     func scrollToNextCell(completionHandler: CompletionHandler){
         

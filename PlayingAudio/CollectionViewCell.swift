@@ -136,10 +136,7 @@ class CollectionViewCell: UICollectionViewCell {
             player.play()
             playImage.setImage(#imageLiteral(resourceName: "pause"), for: UIControlState.normal)
         }
-        
-        
     }
-    
     
     @IBAction func scrubberMoved(_ sender: UISlider) {
         let seconds : Int64 = Int64(scrubber.value)
@@ -279,12 +276,11 @@ class CollectionViewCell: UICollectionViewCell {
     
     
     func playerItemDidReachEnd() {
-        print("AUDIO FINISHED")
-        player.replaceCurrentItem(with: nil)
-        player.pause()
-        player.seek(to: kCMTimeZero)
-        playImage.setImage(#imageLiteral(resourceName: "play"), for: UIControlState.normal)
-            
+//        print("AUDIO FINISHED")
+//        player.replaceCurrentItem(with: nil)
+//        player.pause()
+//        player.seek(to: kCMTimeZero)
+//        playImage.setImage(#imageLiteral(resourceName: "play"), for: UIControlState.normal)
         if (_timeObserver != nil) {
             player.removeTimeObserver(_timeObserver!)
             _timeObserver = nil
@@ -317,7 +313,6 @@ class CollectionViewCell: UICollectionViewCell {
             
             self.scrubber?.addTarget(self, action: #selector(CollectionViewCell.scrubberMoved(_:)), for: .valueChanged)
             
-            
             if (_timeObserver == nil) {
                 _timeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) {
                     [weak self] time in
@@ -341,11 +336,6 @@ class CollectionViewCell: UICollectionViewCell {
                             
                         }
                     }
-                    
-                    
-                    
-                    
-                    
                 }
             }
             let flag = true
