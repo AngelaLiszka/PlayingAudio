@@ -247,14 +247,18 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     private func playCellItem(indexPath: IndexPath){
-
-//        let item = cv.cellForItem(at: indexPath) as! CollectionViewCell
-//        item.audioPlay()
-        
-        cellUiAnimation(indexPath: indexPath)
+        let state = UIApplication.shared.applicationState
+        if state == .background {
+            // app is in background
+            playCellItemInBackground(indexPath: indexPath)
+        }
+        else if state == .active {
+            // app is in foreground
+            playCellItemWithUiAnimation(indexPath: indexPath)
+        }
     }
     
-    func cellUiAnimation(indexPath: IndexPath){
+    func playCellItemWithUiAnimation(indexPath: IndexPath){
         self.loadingCell()
         self.view.isUserInteractionEnabled = true
         let item = cv.cellForItem(at: indexPath) as! CollectionViewCell
@@ -283,6 +287,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                     item.liveAudioStreamSelected(audioUrl: theStream!, live:isLive!)
                 }
                 else{
+                    item.updateScrubber()
                     item.audioStreamSelected(audioUrl: theStream!, live:isLive!) { (success) -> Void in
                     item.nextLbl.isHidden = false
                     item.countdownLbl.isHidden = false
@@ -301,6 +306,20 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             }
             })
         }
+    }
+    
+    func playCellItemInBackground(indexPath: IndexPath)  {
+        
+        let item = cv.cellForItem(at: indexPath) as! CollectionViewCell
+        let theStream = self.streams[indexPath.item]["streamURL"] as? String
+        let isLive = self.streams[indexPath.item]["isLive"] as? Bool
+        if isLive!{
+            item.liveAudioStreamSelected(audioUrl: theStream!, live:isLive!)
+        }
+        else{
+            item.audioStreamSelected(audioUrl: theStream!, live:isLive!)
+        }
+        item.audioPlay()
     }
     
     func playDidEnd(){

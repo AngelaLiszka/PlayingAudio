@@ -277,35 +277,42 @@ class CollectionViewCell: UICollectionViewCell {
 
     
     func audioStreamSelected(audioUrl: String, live: Bool, completionHandler: @escaping CompletionHandler){
-
-            updateScrubber(secondss:totalSecond)
-            
             let interval = CMTimeMake(1, 4)
-
             if (_timeObserver == nil) {
                 _timeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) {
                     [weak self] time in
-                    
-                    if self?.player.currentItem?.status == AVPlayerItemStatus.readyToPlay {
-                        
-                        if (self?.player.currentItem?.isPlaybackLikelyToKeepUp) != nil {
-                    
-                            if let delegate = self?.delegate {
-                                delegate.removeLoading(self!)
-                            }
-                            self?.updatePlayerUI(time: time)
-                        }
-                    }
+                    self?.updatePlayerUI(time: time)
                 }
             }
             let flag = true
             completionHandler(flag)
-    
     }
     
+    func audioStreamSelected(audioUrl: String, live: Bool){
+        let interval = CMTimeMake(1, 4)
+        if (_timeObserver == nil) {
+            _timeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) {
+                [weak self] time in
+            }
+        }
+    }
+
     
     func updatePlayerUI(time:CMTime) {
 
+        if self.player.currentItem?.status == AVPlayerItemStatus.readyToPlay {
+            
+            if (self.player.currentItem?.isPlaybackLikelyToKeepUp) != nil {
+                
+                if let delegate = self.delegate {
+                    delegate.removeLoading(self)
+                }
+                self.updateCountDonwLbl(time: time)
+            }
+        }
+    }
+    
+    func updateCountDonwLbl(time:CMTime){
         let seconds = CMTimeGetSeconds(time)
         let currentTime = CGFloat(seconds)
         
@@ -321,12 +328,12 @@ class CollectionViewCell: UICollectionViewCell {
     }
     
     
-    func updateScrubber(secondss : Float64){
+    func updateScrubber(){
         self.scrubber.minimumValue = 0
-        self.scrubber!.maximumValue = Float(secondss)
+        self.scrubber!.maximumValue = Float(self.totalSecond)
         self.scrubber!.isContinuous = false
         self.scrubber!.tintColor = UIColor(red: 38/255, green: 214/255, blue: 253/255, alpha: 1.0)
-        self.countdownLbl.text = String(self.getFormatedTime(FromTime: Int(secondss)))
+        self.countdownLbl.text = String(self.getFormatedTime(FromTime: Int(self.totalSecond)))
         self.scrubber?.addTarget(self, action: #selector(CollectionViewCell.scrubberMoved(_:)), for: .valueChanged)
     }
 }
