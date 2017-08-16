@@ -42,14 +42,14 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
         NotificationCenter.default.addObserver(self, selector: #selector(reloadList), name: NSNotification.Name(rawValue: "reload"), object: nil)
         
         NotificationCenter.default.addObserver(self,selector: #selector(playDidEnd),name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(movedForeground), name: NSNotification.Name(rawValue: foregroundNotificationKey), object: nil)
 
-        self.currentItem = IndexPath(item: 0, section: 0) // init current select item
-    }
+     }
     
     func reloadList(){
         //load data here
@@ -57,49 +57,23 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.autoPlaySwitch = self.defaults.bool(forKey: "savedSwitchSettingDefault")
-        self.autoPlayAllSourcesSwitch = self.defaults.bool(forKey: "savedAllAutoplaySwitchSettingDefault")
-        cv.alwaysBounceVertical = false
-        cv.isPagingEnabled = true
-        cv.delegate = self
-        cv.dataSource = self
-        layout.animator = LinearCardAttributesAnimator()
-        layout.scrollDirection = .horizontal
-        cv.collectionViewLayout = layout
-        self.navigationController?.navigationBar.titleTextAttributes = [ NSFontAttributeName: UIFont(name: "Avenir-Book", size: 20)!]
-        
-        nextUpdate()
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(loadList), name: NSNotification.Name(rawValue: "load"), object: nil)
-        
-
-        let statusBar: UIView = UIApplication.shared.value(forKey: "statusBar") as! UIView
-        statusBar.backgroundColor = UIColor.clear
-        UIApplication.shared.statusBarStyle = .lightContent
-        
-
-        if defaults.array(forKey: "usersSelection") != nil{
-            streams = []
-            zstreams = []
-            readJson()
-            filterClassName = defaults.array(forKey: "usersSelection") as! [String]
-            let filteredItems = streams.filter{ filterClassName.contains($0["name"] as! String) }
-            for value in filteredItems {
-                let valuesss = value
-                self.zstreams.append(valuesss)
-            }
-            streams = zstreams
-            DispatchQueue.main.async {
-                self.cv.reloadSections(IndexSet(integer: 0))
-            }
-        } else {
-            readJson()
-        }
-        
+        initDatas();
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
+    }
+
+    open override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+        get {
+            return .portrait
+        }
+    }
+    
+    open override var shouldAutorotate: Bool {
+        get {
+            return false
+        }
     }
     
     func nextUpdate(){
@@ -127,6 +101,47 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         
     }
     
+    func initDatas(){
+        self.autoPlaySwitch = self.defaults.bool(forKey: "savedSwitchSettingDefault")
+        self.autoPlayAllSourcesSwitch = self.defaults.bool(forKey: "savedAllAutoplaySwitchSettingDefault")
+        cv.alwaysBounceVertical = false
+        cv.isPagingEnabled = true
+        cv.delegate = self
+        cv.dataSource = self
+        layout.animator = LinearCardAttributesAnimator()
+        layout.scrollDirection = .horizontal
+        cv.collectionViewLayout = layout
+        self.navigationController?.navigationBar.titleTextAttributes = [ NSFontAttributeName: UIFont(name: "Avenir-Book", size: 20)!]
+        
+        nextUpdate()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(loadList), name: NSNotification.Name(rawValue: "load"), object: nil)
+        
+        
+        let statusBar: UIView = UIApplication.shared.value(forKey: "statusBar") as! UIView
+        statusBar.backgroundColor = UIColor.clear
+        UIApplication.shared.statusBarStyle = .lightContent
+        
+        
+        if defaults.array(forKey: "usersSelection") != nil{
+            streams = []
+            zstreams = []
+            readJson()
+            filterClassName = defaults.array(forKey: "usersSelection") as! [String]
+            let filteredItems = streams.filter{ filterClassName.contains($0["name"] as! String) }
+            for value in filteredItems {
+                let valuesss = value
+                self.zstreams.append(valuesss)
+            }
+            streams = zstreams
+            DispatchQueue.main.async {
+                self.cv.reloadSections(IndexSet(integer: 0))
+            }
+        } else {
+            readJson()
+        }
+
+    }
     
     func loadList(){
         if defaults.array(forKey: "usersSelection") != nil{
