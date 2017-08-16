@@ -104,23 +104,18 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         let formatterTimeTxt = DateFormatter()
         formatterTimeTxt.dateFormat = "ha"
         let currentHour = formatterTimeTxt.string(from: now)
-        
-        
         let hour = calendar.component(.hour, from: now)
-        
         let components = DateComponents(calendar: calendar, hour: hour + 1)  // <- 17:00 = 5pm
         let next5pm = calendar.nextDate(after: now, matching: components, matchingPolicy: .nextTime)!
         let diff = calendar.dateComponents([.minute], from: now, to: next5pm)
         let minutesLeft = Int(diff.minute!)
         if minutesLeft < 30 {
-            
             print("\(minutesLeft) minutes till next update")
         } else if(minutesLeft == 30){
             print("Last update at \(currentHour)")
         }else {
             print("Last update at \(currentHour)")
         }
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -140,7 +135,6 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             streams = zstreams
             self.cv.reloadData()
         }
-        
     }
     
     func updatedList(){
@@ -155,10 +149,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             streams = zstreams
             self.cv.reloadData()
         }
-        
     }
-
-    
     
     private func readJson() {
         do {
@@ -194,7 +185,6 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         
         
         if let cell = cv.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? CollectionViewCell {
-            
             let i = indexPath.row % streams.count
             cell.bind(color: streams[i]["hex"] as! String)
             cell.clipsToBounds = animator?.1 ?? true
@@ -212,6 +202,18 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             cell.playImagePreDisplay.isHidden = false
             cell.closeBtnHeight.constant = 20.0
             cell.nextLbl.isHidden = true
+            
+            cell.setupNowPlayingInfoCenter()
+            cell.updateNowPlayingInfoCenter(name: (self.streams[indexPath.item]["name"] as? String)!)
+            cell.initPlayerWithUrl(audioUrl: (self.streams[indexPath.item]["streamURL"] as? String)!)
+            
+//            let theStream = self.streams[indexPath.item]["streamURL"] as? String
+//            let isLive = self.streams[indexPath.item]["isLive"] as? Bool
+//            if isLive! {
+//                cell.liveAudioStreamSelected(audioUrl: theStream!, live:isLive!)
+//            } else {
+//                cell.audioStreamSelected(audioUrl: theStream!, live:isLive!) { (success) -> Void in}
+//            }
             return cell
         }else {
             return CollectionViewCell()
@@ -245,16 +247,21 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     private func playCellItem(indexPath: IndexPath){
-        
-        self.loadingCell()
 
-        let item = cv.cellForItem(at: indexPath) as! CollectionViewCell
-        let i = indexPath.row % self.streams.count
-        self.view.isUserInteractionEnabled = true
+//        let item = cv.cellForItem(at: indexPath) as! CollectionViewCell
+//        item.audioPlay()
         
+        cellUiAnimation(indexPath: indexPath)
+    }
+    
+    func cellUiAnimation(indexPath: IndexPath){
+        self.loadingCell()
+        self.view.isUserInteractionEnabled = true
+        let item = cv.cellForItem(at: indexPath) as! CollectionViewCell
+        let i = indexPath.row % streams.count
         let when = DispatchTime.now() + 3 // change 2 to desired number of seconds
         DispatchQueue.main.asyncAfter(deadline: when) {
-            
+        
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: [], animations: ({
                 item.bind(color: self.streams[i]["hex"] as! String)
                 item.layer.cornerRadius = 1.0
@@ -268,32 +275,30 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                 item.superview?.bringSubview(toFront: item)
                 self.view.setNeedsLayout()
                 self.view.layoutIfNeeded()
-                item.setupNowPlayingInfoCenter()
-                item.updateNowPlayingInfoCenter(name: (self.streams[indexPath.item]["name"] as? String)!)
-                
+        
             }), completion: { (finished: Bool) in
                 let theStream = self.streams[indexPath.item]["streamURL"] as? String
                 let isLive = self.streams[indexPath.item]["isLive"] as? Bool
-                if isLive! {
+                if isLive!{
                     item.liveAudioStreamSelected(audioUrl: theStream!, live:isLive!)
-                } else {
+                }
+                else{
                     item.audioStreamSelected(audioUrl: theStream!, live:isLive!) { (success) -> Void in
                     item.nextLbl.isHidden = false
                     item.countdownLbl.isHidden = false
                     item.playImage.isEnabled = true
                     self.cv.isScrollEnabled = false
                     item.playImage.isHidden = false
-                        
                     if self.autoPlaySwitch {
                         DispatchQueue.main.async {
                             item.audioPlay()
                         }
-                    } else {
+                    }
+                    else{
                         self.removeLoading(item)
                     }
                 }
             }
-                
             })
         }
     }
@@ -464,8 +469,6 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         self.view.addSubview(self.viewActivityIndicator)
         self.activityIndicator.startAnimating()
     }
-    
-    
 }
 
 extension UICollectionView {

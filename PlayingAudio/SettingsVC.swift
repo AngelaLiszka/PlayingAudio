@@ -24,8 +24,6 @@ class SettingsVC: UIViewController {
     @IBAction func autoplayAllSwitchChange(_ sender: Any) {
         defaults.set(self.autoplayAllSwitch.isOn, forKey: "savedAllAutoplaySwitchSettingDefault")
         defaults.synchronize()
-        
-        
     }
     
     @IBAction func doneBtn(_ sender: Any) {
@@ -41,7 +39,4 @@ class SettingsVC: UIViewController {
         self.autoplaySwitch.isOn = self.defaults.bool(forKey: "savedSwitchSettingDefault")
         self.autoplayAllSwitch.isOn = self.defaults.bool(forKey: "savedAllAutoplaySwitchSettingDefault")
     }
-
-
-
 }

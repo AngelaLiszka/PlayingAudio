@@ -39,6 +39,7 @@ class CollectionViewCell: UICollectionViewCell {
     
     let mpicArt = MPNowPlayingInfoCenter.default()
     
+    var totalSecond :Float64 = 0
     
     typealias CompletionHandler = (_ success:Bool) -> Void
     
@@ -88,10 +89,7 @@ class CollectionViewCell: UICollectionViewCell {
         formatterTimeTxt.amSymbol = "am"
         formatterTimeTxt.pmSymbol = "pm"
         let currentHour = formatterTimeTxt.string(from: now)
-        
-        
         let hour = calendar.component(.hour, from: now)
-        
         let components = DateComponents(calendar: calendar, hour: hour + 1)  // <- 17:00 = 5pm
         let next5pm = calendar.nextDate(after: now, matching: components, matchingPolicy: .nextTime)!
         let diff = calendar.dateComponents([.minute], from: now, to: next5pm)
@@ -113,17 +111,12 @@ class CollectionViewCell: UICollectionViewCell {
     @IBAction func play(_ sender: Any) {
         if player.rate == 0
         {
-
             player.play()
             playImage.setImage(#imageLiteral(resourceName: "pause"), for: UIControlState.normal)
-            
-            
         } else {
             player.pause()
             playImage.setImage(#imageLiteral(resourceName: "play"), for: UIControlState.normal)
         }
-        
-        
     }
     
     
@@ -132,7 +125,6 @@ class CollectionViewCell: UICollectionViewCell {
             player.pause()
             playImage.setImage(#imageLiteral(resourceName: "play"), for: UIControlState.normal)
         } else if player.timeControlStatus == .paused {
-            print("LOADING")
             player.play()
             playImage.setImage(#imageLiteral(resourceName: "pause"), for: UIControlState.normal)
         }
@@ -141,16 +133,12 @@ class CollectionViewCell: UICollectionViewCell {
     @IBAction func scrubberMoved(_ sender: UISlider) {
         let seconds : Int64 = Int64(scrubber.value)
         let targetTime:CMTime = CMTimeMake(seconds, 1)
-        
         player.seek(to: targetTime)
-        
         if player.rate == 0
         {
             player.play()
         }
-        
     }
-    
     
     func liveAudioStreamSelected(audioUrl: String, live: Bool){
         
@@ -169,11 +157,7 @@ class CollectionViewCell: UICollectionViewCell {
             }
             
         }
-        
-        
-        
     }
-    
     
     func getFormatedTime(FromTime timeDuration:Int) -> String {
         let minutes = Int(timeDuration) / 60 % 60
@@ -188,7 +172,6 @@ class CollectionViewCell: UICollectionViewCell {
         nextUpdate()
         cellMainViewBg.layer.cornerRadius = 20.0
         UIApplication.shared.beginReceivingRemoteControlEvents()
-        
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
             print("AVAudioSession Category Playback OK")
@@ -216,27 +199,25 @@ class CollectionViewCell: UICollectionViewCell {
             self.setupNowPlayingInfoCenter()
             return .success
         }
+        
         mpic.pauseCommand.addTarget {event in
             self.player.pause()
             return .success
         }
+        
         mpic.nextTrackCommand.addTarget {event in
             return .success
         }
+        
         mpic.previousTrackCommand.addTarget {event in
             return .success
         }
-        
     }
     
-    
     func updateNowPlayingInfoCenter(name: String? = nil) {
-        
         if let stationName = name {
             mpicArt.nowPlayingInfo = [MPMediaItemPropertyTitle : "\(stationName)" as AnyObject]
         }
-        
-        
     }
     
     
@@ -262,11 +243,6 @@ class CollectionViewCell: UICollectionViewCell {
         return formatter
     }()
     
-    func updatePlayerUI(withCurrentTime currentTime: CGFloat) {
-        var components = DateComponents()
-        components.second = Int(currentTime)
-        countdownLbl.text = dateComponentsFormatter.string(from: components)
-    }
     
     func updateTimer() {
         let components = DateComponents()
@@ -276,43 +252,36 @@ class CollectionViewCell: UICollectionViewCell {
     
     
     func playerItemDidReachEnd() {
-//        print("AUDIO FINISHED")
+        print("AUDIO FINISHED")
 //        player.replaceCurrentItem(with: nil)
-//        player.pause()
-//        player.seek(to: kCMTimeZero)
-//        playImage.setImage(#imageLiteral(resourceName: "play"), for: UIControlState.normal)
+        player.pause()
+        player.seek(to: kCMTimeZero)
+        playImage.setImage(#imageLiteral(resourceName: "play"), for: UIControlState.normal)
         if (_timeObserver != nil) {
             player.removeTimeObserver(_timeObserver!)
             _timeObserver = nil
         }
     }
     
-    func audioStreamSelected(audioUrl: String, live: Bool, completionHandler: @escaping CompletionHandler){
+    func initPlayerWithUrl(audioUrl: String){
         if let streamer = URL(string: audioUrl){
-            
             let playerItem:AVPlayerItem = AVPlayerItem(url: streamer)
             self.player = AVPlayer(playerItem: playerItem)
             
             player.replaceCurrentItem(with: playerItem)
             player.actionAtItemEnd = .pause
-            
             let duration : CMTime = playerItem.asset.duration
-            let secondss : Float64 = CMTimeGetSeconds(duration)
-            
-            _ = CMTimeGetSeconds(duration)
+            totalSecond = CMTimeGetSeconds(duration)
+        }
+    }
 
+    
+    func audioStreamSelected(audioUrl: String, live: Bool, completionHandler: @escaping CompletionHandler){
+
+            updateScrubber(secondss:totalSecond)
             
             let interval = CMTimeMake(1, 4)
-            
-            self.scrubber.minimumValue = 0
-            
-            self.scrubber!.maximumValue = Float(secondss)
-            self.scrubber!.isContinuous = false
-            self.scrubber!.tintColor = UIColor(red: 38/255, green: 214/255, blue: 253/255, alpha: 1.0)
-            self.countdownLbl.text = String(self.getFormatedTime(FromTime: Int(secondss)))
-            
-            self.scrubber?.addTarget(self, action: #selector(CollectionViewCell.scrubberMoved(_:)), for: .valueChanged)
-            
+
             if (_timeObserver == nil) {
                 _timeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) {
                     [weak self] time in
@@ -320,30 +289,46 @@ class CollectionViewCell: UICollectionViewCell {
                     if self?.player.currentItem?.status == AVPlayerItemStatus.readyToPlay {
                         
                         if (self?.player.currentItem?.isPlaybackLikelyToKeepUp) != nil {
-                            
+                    
                             if let delegate = self?.delegate {
                                 delegate.removeLoading(self!)
                             }
-                            
-                            let seconds = CMTimeGetSeconds(time)
-                            self?.updatePlayerUI(withCurrentTime: CGFloat(seconds))
-                            
-                            let times : Float64 = CMTimeGetSeconds(self!.player.currentTime());
-                            self?.scrubber!.value = Float ( times );
-                            let countdown = secondss - times
-                            let countTime = self?.getFormatedTime(FromTime: Int(countdown))
-                            self?.countdownLbl.text = String(describing: countTime!)
-                            
+                            self?.updatePlayerUI(time: time)
                         }
                     }
                 }
             }
             let flag = true
             completionHandler(flag)
-        }
-        
+    
     }
     
+    
+    func updatePlayerUI(time:CMTime) {
+
+        let seconds = CMTimeGetSeconds(time)
+        let currentTime = CGFloat(seconds)
+        
+        var components = DateComponents()
+        components.second = Int(currentTime)
+        countdownLbl.text = dateComponentsFormatter.string(from: components)
+        
+        let times : Float64 = CMTimeGetSeconds(self.player.currentTime());
+        self.scrubber!.value = Float ( times );
+        let countdown = self.totalSecond - times
+        let countTime = self.getFormatedTime(FromTime: Int(countdown))
+        self.countdownLbl.text = String(describing: countTime)
+    }
+    
+    
+    func updateScrubber(secondss : Float64){
+        self.scrubber.minimumValue = 0
+        self.scrubber!.maximumValue = Float(secondss)
+        self.scrubber!.isContinuous = false
+        self.scrubber!.tintColor = UIColor(red: 38/255, green: 214/255, blue: 253/255, alpha: 1.0)
+        self.countdownLbl.text = String(self.getFormatedTime(FromTime: Int(secondss)))
+        self.scrubber?.addTarget(self, action: #selector(CollectionViewCell.scrubberMoved(_:)), for: .valueChanged)
+    }
 }
 
 
