@@ -28,7 +28,8 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     var activityIndicator: UIActivityIndicatorView!
     var viewActivityIndicator: UIView!
     var currentItem: IndexPath = []
-    
+    let foregroundNotificationKey = "com.playingaudio.foreground"
+
     typealias CompletionHandler = (_ success:Bool) -> Void
     
     
@@ -44,6 +45,10 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         NotificationCenter.default.addObserver(self, selector: #selector(reloadList), name: NSNotification.Name(rawValue: "reload"), object: nil)
         
         NotificationCenter.default.addObserver(self,selector: #selector(playDidEnd),name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(movedForeground), name: NSNotification.Name(rawValue: foregroundNotificationKey), object: nil)
+
+        self.currentItem = IndexPath(item: 0, section: 0) // init current select item
     }
     
     func reloadList(){
@@ -206,14 +211,6 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             cell.setupNowPlayingInfoCenter()
             cell.updateNowPlayingInfoCenter(name: (self.streams[indexPath.item]["name"] as? String)!)
             cell.initPlayerWithUrl(audioUrl: (self.streams[indexPath.item]["streamURL"] as? String)!)
-            
-//            let theStream = self.streams[indexPath.item]["streamURL"] as? String
-//            let isLive = self.streams[indexPath.item]["isLive"] as? Bool
-//            if isLive! {
-//                cell.liveAudioStreamSelected(audioUrl: theStream!, live:isLive!)
-//            } else {
-//                cell.audioStreamSelected(audioUrl: theStream!, live:isLive!) { (success) -> Void in}
-//            }
             return cell
         }else {
             return CollectionViewCell()
@@ -317,7 +314,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             item.liveAudioStreamSelected(audioUrl: theStream!, live:isLive!)
         }
         else{
-            item.audioStreamSelected(audioUrl: theStream!, live:isLive!)
+            item.audioStreamSelected(audioUrl: theStream!, live:isLive!) { (success) -> Void in}
         }
         item.audioPlay()
     }
@@ -326,7 +323,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         let cell = cv.cellForItem(at: currentItem) as! CollectionViewCell
         cell.playerItemDidReachEnd()
         closeView(cell)
-    }
+    }    
     
     private func findCenterIndex() -> IndexPath {
         let center = self.view.convert(self.cv.center, to: self.cv)
@@ -487,6 +484,36 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         self.viewActivityIndicator.addSubview(titleLabel)
         self.view.addSubview(self.viewActivityIndicator)
         self.activityIndicator.startAnimating()
+    }
+    
+    func movedForeground(){
+        let item = cv.cellForItem(at: currentItem) as! CollectionViewCell
+        if item.player.rate != 0 {
+            initCurrentPlayItemUI()
+        }
+    }
+    
+    func initCurrentPlayItemUI(){
+        let i = currentItem.row % streams.count
+        let item = cv.cellForItem(at: currentItem) as! CollectionViewCell
+        item.bind(color: self.streams[i]["hex"] as! String)
+        item.layer.cornerRadius = 1.0
+        item.layer.borderWidth = 0.0
+        item.frame = self.cv.bounds
+        //                        item.cellMainViewBg.backgroundColor = UIColor.clear
+        item.playImagePreDisplay.isHidden = true
+        item.closeBtnHeight.constant = 40.0
+        item.scrubber.isHidden = false
+        item.closeBtnView.isHidden = false
+        item.superview?.bringSubview(toFront: item)
+        self.view.setNeedsLayout()
+        self.view.layoutIfNeeded()
+        
+        item.nextLbl.isHidden = false
+        item.countdownLbl.isHidden = false
+        item.playImage.isEnabled = true
+        self.cv.isScrollEnabled = false
+        item.playImage.isHidden = false
     }
 }
 

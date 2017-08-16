@@ -281,21 +281,28 @@ class CollectionViewCell: UICollectionViewCell {
             if (_timeObserver == nil) {
                 _timeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) {
                     [weak self] time in
-                    self?.updatePlayerUI(time: time)
+                    
+                    let state = UIApplication.shared.applicationState
+                    if state == .active {
+                        // app is in foreground
+                        self?.updatePlayerUI(time: time)
+                    }
+
                 }
             }
             let flag = true
             completionHandler(flag)
     }
     
-    func audioStreamSelected(audioUrl: String, live: Bool){
-        let interval = CMTimeMake(1, 4)
-        if (_timeObserver == nil) {
-            _timeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) {
-                [weak self] time in
-            }
-        }
-    }
+//    func audioStreamSelected(audioUrl: String, live: Bool){
+//        let interval = CMTimeMake(1, 4)
+//        if (_timeObserver == nil) {
+//            _timeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) {
+//                [weak self] time in
+//                
+//            }
+//        }
+//    }
 
     
     func updatePlayerUI(time:CMTime) {
@@ -335,7 +342,7 @@ class CollectionViewCell: UICollectionViewCell {
         self.scrubber!.tintColor = UIColor(red: 38/255, green: 214/255, blue: 253/255, alpha: 1.0)
         self.countdownLbl.text = String(self.getFormatedTime(FromTime: Int(self.totalSecond)))
         self.scrubber?.addTarget(self, action: #selector(CollectionViewCell.scrubberMoved(_:)), for: .valueChanged)
-    }
+    }    
 }
 
 
