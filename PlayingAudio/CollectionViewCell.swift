@@ -277,7 +277,7 @@ class CollectionViewCell: UICollectionViewCell {
 
     
     func audioStreamSelected(audioUrl: String, live: Bool, completionHandler: @escaping CompletionHandler){
-            let interval = CMTimeMake(1, 4)
+            let interval = CMTimeMake(1,1)
             if (_timeObserver == nil) {
                 _timeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) {
                     [weak self] time in
@@ -293,17 +293,6 @@ class CollectionViewCell: UICollectionViewCell {
             let flag = true
             completionHandler(flag)
     }
-    
-//    func audioStreamSelected(audioUrl: String, live: Bool){
-//        let interval = CMTimeMake(1, 4)
-//        if (_timeObserver == nil) {
-//            _timeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) {
-//                [weak self] time in
-//                
-//            }
-//        }
-//    }
-
     
     func updatePlayerUI(time:CMTime) {
 
